@@ -76,12 +76,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         return instance
 
 class ArticleDetailSerializer(serializers.ModelSerializer):
-    # tags = serializers.SlugRelatedField(
-    #     queryset=Tag.objects.all(),
-    #     many=True,
-    #     required=False,
-    #     slug_field='name'
-    # )
     tags = TagSerializer(required=False, many=True)     # 嵌套序列化，方便直接使用序列化的数据处理外键
     comments = CommentSerializer(required=False, many=True, read_only=True)
     user = serializers.SlugRelatedField(

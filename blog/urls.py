@@ -12,9 +12,9 @@ router.register('user', UserViewSet, basename='user')
 # # path('viewset', include(router.urls), name='viewset')
 urlpatterns = [
     path('', include(router.urls)),
-    path('userinfo/', get_user_info, name='get_user_info'),
-    path('userid/', get_user_id, name='get_user_id'),           # 通过
+    path('userinfo/', get_user_info, name='get_user_info'),     # 客户端提供token，后端返回用户的信息
+    # path('userid/', get_user_id, name='get_user_id'),
     path('tag/', get_tags, name='get_tags'),                    # 接受GET请求，获取标签的列表，权限: 无
-    path('voteup/', vote_up, name='vote_up'),
-    path('votedown/', vote_down, name='vote_down'),
+    path('voteup/', vote_up, name='vote_up'),                   # 点赞
+    path('votedown/', vote_down, name='vote_down'),             # 取消点赞
 ]

@@ -1,5 +1,3 @@
-from django.shortcuts import render
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from .serializers import *
 from rest_framework import status
@@ -13,19 +11,19 @@ from rest_framework import viewsets
 from django.http import JsonResponse
 
 # Create your views here.
-@api_view(['GET', 'POST'])
-def article_list(request):
-    if request.method == 'GET':
-        articles = Article.objects.all()
-        serializer = ArticleDetailSerializer(articles, many=True)
-        return Response(serializer.data)
-
-    elif request.method == 'POST':
-        serializer = ArticleDetailSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# @api_view(['GET', 'POST'])
+# def article_list(request):
+#     if request.method == 'GET':
+#         articles = Article.objects.all()
+#         serializer = ArticleDetailSerializer(articles, many=True)
+#         return Response(serializer.data)
+#
+#     elif request.method == 'POST':
+#         serializer = ArticleDetailSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ArticleViewSet(viewsets.ModelViewSet):
     queryset = Article.objects.all()
@@ -44,11 +42,10 @@ class ArticleViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         """为文章的增删改查设置权限"""
         permission_classes = []
-        print('ok: ', self.action)
-        if self.action == 'retrieve':
+        if self.action == 'retrieve' or self.action == 'create':
             permission_classes = [AllowAny]
         else:
-            permission_classes = [IsOwnArticle]
+            permission_classes = [IsArticleOwnerOrAdmin]
         return [permission() for permission in permission_classes]
 
 
@@ -64,17 +61,24 @@ class UserViewSet(viewsets.ModelViewSet):
         # 每个人都能注册用户，查看用户
         if self.action == 'create' or self.action == 'retrieve':
             permission_classes = [AllowAny]
-        # 只有已经登陆的用户或管理员才能获取、更新、patch用户信息
+        # 只有本人或管理员才能获取、更新、patch用户信息
         elif self.action == 'update' or self.action == 'partial_update':
             permission_classes = [IsLoggedInUserOrAdmin]
         # 只有管理员才能获取用户列表和删除用户
         elif self.action == 'list' or self.action == 'destroy':
-            permission_classes = [AllowAny]
+            permission_classes = [IsAdminUser]
         return [permission() for permission in permission_classes]
 
 class AvatarViewSet(viewsets.ModelViewSet):
     queryset = Avatar.objects.all()
     serializer_class = AvatarSerializer
+
+    def get_permissions(self):
+        """只有管理员和本人才能对图片进行更改和删除"""
+        permission_classes = []
+        if self.action == 'update' or self.action == 'partial_update' or self.action == 'destroy':
+            permission_classes = [IsAvatarOwnerOrAdmin]
+        return [permission() for permission in permission_classes]
 
 @api_view(['GET'])
 def get_user_info(request):

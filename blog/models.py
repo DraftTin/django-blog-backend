@@ -6,7 +6,7 @@ from django.conf import settings
 
 
 class Avatar(models.Model):
-    value = models.ImageField(upload_to='photos/%Y%m%d', default="avatar.jpg")
+    value = models.ImageField(upload_to='photos/%Y%m%d')
 
 class User(AbstractUser):
     # email字段用于验证不能重复，技术上来说username可以重复，但是一般习惯用单一username
