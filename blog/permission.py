@@ -26,6 +26,16 @@ class NoPermission(permissions.BasePermission):
 
 class IsArticleOwnerOrAdmin(permissions.BasePermission):
     """检查是否是本人或者管理员"""
+    def has_permission(self, request, view):
+        # 如果是创建文章，则只允许创建作者为自己的文章
+        if request.method == 'POST':
+            if 'user' not in request.data:
+                return False
+            print(request.data['user'] == request.user.username)
+            return request.data['user'] == request.user.username
+        return True
+
+
     def has_object_permission(self, request, view, obj):
         """只设置has_object_permission，创建不需要访问对象"""
         print(request.user)

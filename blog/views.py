@@ -42,13 +42,11 @@ class ArticleViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         """为文章的增删改查设置权限"""
         permission_classes = []
-        if self.action == 'retrieve' or self.action == 'create':
+        if self.action == 'retrieve':
             permission_classes = [AllowAny]
         else:
             permission_classes = [IsArticleOwnerOrAdmin]
         return [permission() for permission in permission_classes]
-
-
 
 # 使用ViewSet可以直接配置路由方法，very convenient
 class UserViewSet(viewsets.ModelViewSet):

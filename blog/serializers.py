@@ -97,6 +97,7 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         tags = validated_data.pop('tags')
+        print(validated_data)
         article = Article(**validated_data)
         article.save()
         for tag in tags:
