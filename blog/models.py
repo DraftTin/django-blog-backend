@@ -47,7 +47,7 @@ class Article(models.Model):
     created = models.DateTimeField(default=timezone.now)
     updated = models.DateTimeField(auto_now=True)
     tags = models.ManyToManyField(to='Tag', related_name='articles')
-    read_count = models.IntegerField(default=0)
+    # read_count = models.IntegerField(default=0)
     like_count = models.IntegerField(default=0)
     like_persons = models.ManyToManyField(to='User', related_name='like_articles', blank=True)
     def getMd(self):

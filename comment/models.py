@@ -10,7 +10,7 @@ class Comment(models.Model):
     content = models.TextField()
     # 代表该评论回复的评论的引用，如果没有回复其他评论则为空
     quote_comment = models.ForeignKey(to='self', null=True, blank=True,
-                                       on_delete=models.SET_NULL, related_name='sub_comments')
+                                       on_delete=models.CASCADE, related_name='sub_comments')
 
     # reply_user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='usercomment')
     # # 类似于并查集，但这里直接记录祖先结点
