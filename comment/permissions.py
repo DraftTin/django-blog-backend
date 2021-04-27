@@ -13,7 +13,7 @@ class IsOwnerOrAdmin(BasePermission):
         return request.user == obj.user or request.user.is_superuser or request.user.id == obj.article.user_id
 
 class OnlyUpdateContent(BasePermission):
-    """更新评论只能更改评论的content"""
+    """更新评论只能更改评论的content，其他种类的更新均不允许"""
     def has_object_permission(self, request, view, obj):
         if 'content' in request.data.keys() and len(request.data.keys()) == 1:
             return True
@@ -30,10 +30,11 @@ class OnlyCreateOwnComment(BasePermission):
 class OnlyFromSameArticle(BasePermission):
     """创建评论的时候只能回复同一文章的其他评论"""
     def has_permission(self, request, view):
-        if 'quote_comment_id' in request.data.keys() and 'article_id' in request.data.keys():
+        if 'quote_comment_id' in request.data.keys() and request.data['quote_comment_id'] != None\
+                and 'article_id' in request.data.keys():
+            print(request.data)
             article_id = int(request.data['article_id'])
             quote_comment_id = int(request.data['quote_comment_id'])
-            print(request.data)
             print(article_id, Comment.objects.get(pk=quote_comment_id).article_id)
             return article_id == Comment.objects.get(pk=quote_comment_id).article_id
-        return False
+        return True

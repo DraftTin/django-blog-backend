@@ -95,7 +95,9 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
     #     return obj.getMd()[1]
 
     def create(self, validated_data):
-        tags = validated_data.pop('tags')
+        tags = []       # 如果创建文章没提供标签默认为空
+        if 'tags' in validated_data:
+            tags = validated_data.pop('tags')
         print(validated_data)
         article = Article(**validated_data)
         article.save()
@@ -121,7 +123,6 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
         instance.body = validated_data.get('body', instance.body)
         instance.save()
         if 'tags' in validated_data:
-            print('oookokok')
             instance.tags.clear()
             instance.save()
             tags = validated_data.pop('tags')
