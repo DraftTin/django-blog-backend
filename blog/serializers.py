@@ -49,7 +49,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             userProfile = UserProfile(**profile)         # 单独创建外键对象, **profile
         else:
             userProfile = UserProfile()
-        print(userProfile.photo.value)
         userProfile.user = user
         userProfile.save()
         return user
@@ -85,15 +84,15 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
         slug_field='username',
     )
     user_id = serializers.IntegerField(read_only=True)
-    html_body = serializers.SerializerMethodField()
-    html_topic = serializers.SerializerMethodField()
-    def get_html_body(self, obj):
-        """obj为已经序列化对象的实例"""
-        return obj.getMd()[0]
-
-    def get_html_topic(self, obj):
-        """obj为已经序列化对象的实例"""
-        return obj.getMd()[1]
+    # html_body = serializers.SerializerMethodField()
+    # html_topic = serializers.SerializerMethodField()
+    # def get_html_body(self, obj):
+    #     """obj为已经序列化对象的实例"""
+    #     return obj.getMd()[0]
+    #
+    # def get_html_topic(self, obj):
+    #     """obj为已经序列化对象的实例"""
+    #     return obj.getMd()[1]
 
     def create(self, validated_data):
         tags = validated_data.pop('tags')
@@ -116,25 +115,29 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
         return article
 
     def update(self, instance, validated_data):
+        """只修改title, content, tags，不修改user等信息"""
         print(validated_data)
         instance.title = validated_data.get('title', instance.title)
         instance.body = validated_data.get('body', instance.body)
-        instance.tags.clear()
         instance.save()
-        tags = validated_data.pop('tags')
-        for tag in tags:
-            tagName = tag['name']
-            # 创建新的标签，如果标签不存在则创建并添加外键
-            if not Tag.objects.filter(name=tagName).exists():
-                newTag = Tag(name=tagName)
-                newTag.save()
-                newTag.articles.add(instance)
-                newTag.save()
-            # 如果标签存在，则只添加外键
-            else:
-                tag = Tag.objects.get(name=tagName)
-                tag.articles.add(instance)
-                tag.save()
+        if 'tags' in validated_data:
+            print('oookokok')
+            instance.tags.clear()
+            instance.save()
+            tags = validated_data.pop('tags')
+            for tag in tags:
+                tagName = tag['name']
+                # 创建新的标签，如果标签不存在则创建并添加外键
+                if not Tag.objects.filter(name=tagName).exists():
+                    newTag = Tag(name=tagName)
+                    newTag.save()
+                    newTag.articles.add(instance)
+                    newTag.save()
+                # 如果标签存在，则只添加外键
+                else:
+                    tag = Tag.objects.get(name=tagName)
+                    tag.articles.add(instance)
+                    tag.save()
         return instance
 
     class Meta:

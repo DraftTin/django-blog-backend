@@ -35,10 +35,9 @@ class IsArticleOwnerOrAdmin(permissions.BasePermission):
             return request.data['user'] == request.user.username
         return True
 
-
     def has_object_permission(self, request, view, obj):
-        """只设置has_object_permission，创建不需要访问对象"""
-        print(request.user)
+        print(request.user, obj.user)
+        print(request.user.is_superuser)
         return obj.user == request.user or request.user.is_superuser
 
 class IsAvatarOwnerOrAdmin(permissions.BasePermission):

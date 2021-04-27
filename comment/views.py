@@ -3,7 +3,7 @@ from rest_framework.permissions import AllowAny
 
 from .models import Comment
 from .serializers import CommentSerializer
-from .permissions import IsOwner, IsOwnerOrAdmin
+from .permissions import IsOwner, IsOwnerOrAdmin, OnlyUpdateContent, OnlyCreateOwnComment, OnlyFromSameArticle
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -18,9 +18,12 @@ class CommentViewSet(viewsets.ModelViewSet):
         permission_classes = []
         if self.action == 'retrieve' or self.action == 'list':
             permission_classes = [AllowAny]
-        # update只对本人放行
+        # 只允许创建user为自己的评论，只允许引用同一篇文章下的评论
+        elif self.action == 'create':
+            permission_classes = [OnlyCreateOwnComment, OnlyFromSameArticle]
+        # update只对本人放行，并且只能创建所有者为本人的评论
         elif self.action == 'update' or self.action == 'partial_update':
-            permission_classes = [IsOwner]
+            permission_classes = [IsOwner, OnlyUpdateContent]
         # delete只对本人和管理员放行
         elif self.action == 'destroy':
             permission_classes = [IsOwnerOrAdmin]
