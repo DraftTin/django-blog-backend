@@ -28,12 +28,12 @@ class UserProfile(models.Model):
     # related_name用于对应表调用本表对象所使用的属性名
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile',
                                 null=True, blank=True)
-    intro = models.CharField(max_length=50, default="", blank=True)
+    intro = models.CharField(max_length=100, default="", blank=True)
     registered = models.DateField(auto_now=True)
-    country = models.CharField(max_length=50, default="", blank=True)
-    city = models.CharField(max_length=50, default="", blank=True)
-    zip = models.CharField(max_length=20, default='', blank=True)
-    address = models.CharField(max_length=50, default="", blank=True)
+    country = models.CharField(max_length=100, default="", blank=True)
+    city = models.CharField(max_length=100, default="", blank=True)
+    zip = models.CharField(max_length=40, default='', blank=True)
+    address = models.CharField(max_length=100, default="", blank=True)
     photo = models.OneToOneField(to='Avatar', blank=True, null=True, related_name='userprofile',
                                     on_delete=models.CASCADE)
     class Meta:

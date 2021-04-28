@@ -48,7 +48,7 @@ class ArticleViewSet(viewsets.ModelViewSet):
             #        | self.queryset.filter(user__username__contains=searchText)
             #        | self.queryset.filter(user__email__contains=searchText)
             #        | self.queryset.filter(tags__name__contains=searchText)).distinct()
-            return data
+            return data.order_by('-like_count', '-created')
         return self.queryset.all()
 
     def get_permissions(self):
