@@ -50,14 +50,14 @@ class Article(models.Model):
     # read_count = models.IntegerField(default=0)
     like_count = models.IntegerField(default=0)
     like_persons = models.ManyToManyField(to='User', related_name='like_articles', blank=True)
-    def getMd(self):
-        md = Markdown(extensions=[
-            'markdown.extensions.extra',
-            'markdown.extensions.codehilite',
-            'markdown.extensions.toc',
-        ])
-        htmlbody = md.convert(self.body)
-        return htmlbody, md.toc
+    # def getMd(self):
+    #     md = Markdown(extensions=[
+    #         'markdown.extensions.extra',
+    #         'markdown.extensions.codehilite',
+    #         'markdown.extensions.toc',
+    #     ])
+    #     htmlbody = md.convert(self.body)
+    #     return htmlbody, md.toc
     class Meta:
         ordering = ['-id']
 

@@ -4,6 +4,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny
 from rest_framework_jwt.utils import jwt_decode_handler
+from django.db.models.query import QuerySet
+
 # 引用自定义的权限
 from .permission import *
 from .models import *
@@ -32,10 +34,20 @@ class ArticleViewSet(viewsets.ModelViewSet):
         # 重写该方法使得获取
         searchText = self.request.query_params.get('searchText', None)
         if searchText != None:
-            data = (self.queryset.filter(title__contains=searchText)
-                   | self.queryset.filter(user__username__contains=searchText)
-                   | self.queryset.filter(user__email__contains=searchText)
-                   | self.queryset.filter(tags__name__contains=searchText)).distinct()
+            searchRes = set()
+            articles = Article.objects.all()
+            articlesByTags = articles.filter(tags__name__contains=searchText)
+            for article in articles:
+                if searchText in article.title or \
+                        searchText in article.user.username or \
+                        searchText in article.user.email or \
+                        article in articlesByTags:
+                    searchRes.add(article.id)
+            data = Article.objects.filter(id__in=searchRes)
+            # data = (self.queryset.filter(title__contains=searchText)
+            #        | self.queryset.filter(user__username__contains=searchText)
+            #        | self.queryset.filter(user__email__contains=searchText)
+            #        | self.queryset.filter(tags__name__contains=searchText)).distinct()
             return data
         return self.queryset.all()
 
