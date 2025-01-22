@@ -3,7 +3,7 @@ from .serializers import *
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny
-from rest_framework_jwt.utils import jwt_decode_handler
+from rest_framework_simplejwt.tokens import AccessToken
 from django.db.models.query import QuerySet
 
 # 引用自定义的权限
@@ -95,7 +95,7 @@ def get_user_info(request):
     """根据token获取用户信息"""
     if request.method == 'GET':
         token = request.GET.get('token')
-        token_user = jwt_decode_handler(token)
+        token_user = AccessToken(token)
         user_id = token_user['user_id']
         user_info = User.objects.get(pk=user_id)
         serializer = UserSerializer(user_info, many=False, context={'request': request})
@@ -106,7 +106,7 @@ def get_user_id(request):
     """根据token获取用户id"""
     if request.method == 'GET':
         token = request.GET.get('token')
-        token_user = jwt_decode_handler(token)
+        token_user = AccessToken(token)
         return JsonResponse({'user_id': token_user['user_id']})
 
 # class TagViewSet(viewsets.ReadOnlyModelViewSet):

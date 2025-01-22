@@ -96,20 +96,24 @@ WSGI_APPLICATION = 'blog-backend.wsgi.application'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DATABASES = {
-    'postgre': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'blog',
-        'USER': 'postgres',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    },
     'default': {
-        'ENGINE': 'django.db.backends.oracle',
-        'NAME': '127.0.0.1:1521/blog',
-        'USER': 'SYSTEM',
-        'PASSWORD': ''
-    }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',  
+    },
+    # 'postgre': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'blog',
+    #     'USER': 'postgres',
+    #     'PASSWORD': '',
+    #     'HOST': '127.0.0.1',
+    #     'PORT': '5432',
+    # },
+    # 'oracle': {
+    #     'ENGINE': 'django.db.backends.oracle',
+    #     'NAME': '127.0.0.1:1521/blog',
+    #     'USER': 'SYSTEM',
+    #     'PASSWORD': ''
+    # }
 }
 
 # Password validation
