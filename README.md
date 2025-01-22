@@ -1,4 +1,4 @@
-# MyBlog Backend
+# Django-Blog Backend
 
 The **MyBlog Backend** is a server-side application designed to support a blog platform. It provides APIs for managing blog posts, comments, and other related functionalities.
 
